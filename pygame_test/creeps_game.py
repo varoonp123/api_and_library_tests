@@ -6,7 +6,7 @@ Author : Varoon Pazhyanur
 
 Date Created : 01-28-2017
 
-Last Modified : Sat 28 Jan 2017 11:54:25 PM EST
+Last Modified : Sun 29 Jan 2017 03:19:35 PM EST
 
 
 /************************************
@@ -19,7 +19,22 @@ class Creep(Sprite):
     #the screen is a pygame Surface object, img_filename describes where to find im, position is a 2d vector, direction is a 2d vector with an angle that is a multiple of 45 degrees and speed is in pixels/millisecond
     def __init__(self, screen, img_filename, init_position, init_direction, speed):
         #NOTE that the top left is (0,0) and y increases downwards
-        
+    def update(self, time_passed):
+        #change direction
+        self._change_direction(time_passed) #make point in right direction. rotate() rotates counter clockwise
+        self.image = pygame.transform.rotate(self.base_image, -self.direction.angle)
+    
+         #apply displacement to position vector. Displacement is a vector with angle of self.direction
+        displacement = vec2d(self.direction.x * self.speed*time_passed, self.direction.y * self.speed*time_passed)
+        self.pos += displacement
+
+    #blitting is the process of transnfering an image into a pygame surface.
+    
+    def blitme(self):
+        draw_pos = self.image.get_rect().move(self.pos.x - self.image_w/2, self.pos.y - self.image_h/2)
+        self.screen.blit(self.image, draw_pos)
+    #the adjustment in draw_pos is needed because when rotated 45 degrees, the image takes up more space. This keeps the center in the same place
+                
 #Game params
 SCREEN_WIDTH, SCREEN_HEIGHT = 400,500
 BG_COLOR = 150,150,80
